@@ -30,7 +30,7 @@ Content-Type: application/json
     "id": 1,
     "modelo": "Modelo X",
     "marca": "Marca Y",
-    "tipoSensor": "TIPO_A"
+    "TIPOSENSOR": "TIPO_A"
 }
 
 PUT http://localhost:8080/sensores/1
@@ -39,7 +39,7 @@ Content-Type: application/json
 {
     "modelo": "Novo Modelo Sensor",
     "marca": "Nova Marca Sensor",
-    "tipoSensor": "TIPO_B"
+    "TIPOSENSOR": "TIPO_B"
 }
 
 POST http://localhost:8080/rotas
