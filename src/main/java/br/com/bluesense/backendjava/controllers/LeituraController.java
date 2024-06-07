@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.net.URI;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -73,7 +74,7 @@ public class LeituraController {
         LeituraResponseDto createdLeitura = leituraService.createLeitura(leitura);
         EntityModel<LeituraResponseDto> entityModel = EntityModel.of(createdLeitura,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LeituraController.class).getLeituraById(createdLeitura.id())).withSelfRel());
-        return ResponseEntity.ok(entityModel);
+        return ResponseEntity.created(URI.create("/leituras/")).body(entityModel);
     }
 
     @PutMapping("/{id}")
@@ -83,7 +84,7 @@ public class LeituraController {
         Optional<Leitura> leituraOptional = leituraService.updateLeitura(id, leituraDetails);
         return leituraOptional.map(l -> EntityModel.of(l,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(LeituraController.class).getLeituraById(id)).withSelfRel()))
-                .map(ResponseEntity::ok)
+                .map(entityModel -> ResponseEntity.created(URI.create("/leituras/" + id)).body(entityModel))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

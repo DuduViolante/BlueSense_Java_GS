@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.net.URI;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -73,7 +74,7 @@ public class NotificacaoController {
         NotificacaoResponseDTO createdNotificacao = notificacaoService.createNotificacao(notificacaoDTO);
         EntityModel<NotificacaoResponseDTO> entityModel = EntityModel.of(createdNotificacao,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NotificacaoController.class).getNotificacaoById(createdNotificacao.id())).withSelfRel());
-        return ResponseEntity.ok(entityModel);
+        return ResponseEntity.created(URI.create("/notificacoes/")).body(entityModel);
     }
 
     @PutMapping("/{id}")
@@ -83,7 +84,7 @@ public class NotificacaoController {
         Optional<NotificacaoDTO> notificacaoOptional = notificacaoService.updateNotificacao(id, notificacaoDetails);
         return notificacaoOptional.map(n -> EntityModel.of(n,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(NotificacaoController.class).getNotificacaoById(id)).withSelfRel()))
-                .map(ResponseEntity::ok)
+                .map(entityModel -> ResponseEntity.created(URI.create("/notificacoes/" + id)).body(entityModel))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

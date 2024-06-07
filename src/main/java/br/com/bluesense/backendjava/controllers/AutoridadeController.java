@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.net.URI;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -73,7 +74,7 @@ public class AutoridadeController {
         Autoridade createdAutoridade = autoridadeService.createAutoridade(autoridade);
         EntityModel<Autoridade> entityModel = EntityModel.of(createdAutoridade,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutoridadeController.class).getAutoridadeById(createdAutoridade.getId())).withSelfRel());
-        return ResponseEntity.ok(entityModel);
+        return ResponseEntity.created(URI.create("/autoridades/")).body(entityModel);
     }
 
     @PutMapping("/{id}")
@@ -83,7 +84,7 @@ public class AutoridadeController {
         Optional<Autoridade> autoridadeOptional = autoridadeService.updateAutoridade(id, autoridadeDetails);
         return autoridadeOptional.map(a -> EntityModel.of(a,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AutoridadeController.class).getAutoridadeById(id)).withSelfRel()))
-                .map(ResponseEntity::ok)
+                .map(entityModel -> ResponseEntity.created(URI.create("/autoridades/" + id)).body(entityModel))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

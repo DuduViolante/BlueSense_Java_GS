@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -61,10 +62,10 @@ public class SensorController {
 
     @PutMapping("/{id}")
     @ApiOperation(value = "Atualizar um sensor existente", response = Sensor.class)
-    public ResponseEntity<Sensor> updateSensor(@ApiParam(value = "ID do sensor a ser atualizado") @PathVariable Long id, 
-                                                @ApiParam(value = "Detalhes do sensor atualizado") @RequestBody Sensor sensorDetails) {
+    public Optional<ResponseEntity<Sensor>> updateSensor(@ApiParam(value = "ID do sensor a ser atualizado") @PathVariable Long id,
+                                                         @ApiParam(value = "Detalhes do sensor atualizado") @RequestBody Sensor sensorDetails) {
         Optional<Sensor> sensorOptional = sensorService.updateSensor(id, sensorDetails);
-        return sensorOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return sensorOptional.map(entityModel -> ResponseEntity.created(URI.create("/sensores/" + id)).body(entityModel));
     }
 
     @DeleteMapping("/{id}")

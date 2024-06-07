@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.net.URI;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -72,7 +73,7 @@ public class RotaController {
         Rota createdRota = rotaService.createRota(rota);
         EntityModel<Rota> entityModel = EntityModel.of(createdRota,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RotaController.class).getRotaById(createdRota.getId())).withSelfRel());
-        return ResponseEntity.ok(entityModel);
+        return ResponseEntity.created(URI.create("/rotas/")).body(entityModel);
     }
 
     @PutMapping("/{id}")
@@ -82,7 +83,7 @@ public class RotaController {
         Optional<Rota> rotaOptional = rotaService.updateRota(id, rotaDetails);
         return rotaOptional.map(r -> EntityModel.of(r,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(RotaController.class).getRotaById(id)).withSelfRel()))
-                .map(ResponseEntity::ok)
+                .map(entityModel -> ResponseEntity.created(URI.create("/rotas/" + id)).body(entityModel))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

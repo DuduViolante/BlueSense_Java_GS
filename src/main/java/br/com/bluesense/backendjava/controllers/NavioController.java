@@ -1,5 +1,6 @@
 package br.com.bluesense.backendjava.controllers;
 
+import java.net.URI;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +50,9 @@ public class NavioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Navio> updateNavio(@PathVariable Long id, @RequestBody Navio navioDetails) {
+    public Optional<ResponseEntity<Navio>> updateNavio(@PathVariable Long id, @RequestBody Navio navioDetails) {
         Optional<Navio> navioOptional = navioService.updateNavio(id, navioDetails);
-        return navioOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return navioOptional.map(entityModel -> ResponseEntity.created(URI.create("/navio/" + id)).body(entityModel));
     }
 
     @DeleteMapping("/{id}")
